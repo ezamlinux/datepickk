@@ -1,6 +1,7 @@
 {
   "name": "datepickk",
   "description": "Flexbox/js datepicker",
+  "version": "1.0.0",
   "main": "src/js/datepickk.js",
   "directories": {
     "doc": "docs"
