@@ -41,11 +41,11 @@ function Datepickk(args){
 			dayNames:['So','Mo','Di','Mi','Do','Fr','Sa'],
 			weekStart:1
 		},
-		fr: {
-			monthNames:['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'],
-			dayNames:['Di','Lu','Ma','Me','Je','Ve','Sa'],
-			weekStart:1
-		}
+        fr: {
+            monthNames:['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+            dayNames:['D','L','M','M','J','V','S'],
+            weekStart:1
+        }
 	};
 
 	/*Language aliases*/
@@ -65,7 +65,7 @@ function Datepickk(args){
 	var onConfirm = null;
 	var closeOnClick = true;
 	var inline = false;
-	var lang = 'fr';
+	var lang = 'en';
 	var onSelect = null;
 	var disabledDates = [];
 	var disabledDays = [];
@@ -104,7 +104,10 @@ function Datepickk(args){
 
 	function generateYears(){
 		[].slice.call(that.el.yearPicker.childNodes).forEach(function(node,index) {
-			node.innerHTML = "'" + (currentYear + parseInt(node.getAttribute('data-year'))).toString().substring(2,4);
+			if (node.getAttribute('data-year') != null) {
+				node.innerHTML = "'" + (currentYear + parseInt(node.getAttribute('data-year'))).toString().substring(2,4);
+			}
+
 		})
 	}
 
@@ -149,14 +152,14 @@ function Datepickk(args){
 		function highlightLegend(e){
 			if(e.target.nodeName !== 'LABEL') return;
 
-			var legendIds = (e.target.getAttribute('data-legend-id'))?e.target.getAttribute('data-legend-id').split(' '):[];
+			var legendIds = (e.target.getAttribute('data-legendp-id'))?e.target.getAttribute('data-legendp-id').split(' '):[];
 			if(!legendIds.length) return;
 
 			legendIds.forEach(function(legendId) {
-				var element = that.el.legend.querySelector('[data-legend-id="' + legendId + '"]');
+				var element = that.el.legend.querySelector('[data-legendp-id="' + legendId + '"]');
 				if(e.type == 'mouseover' && element){
 					var color = (element.getAttribute('data-color'))?hexToRgb(element.getAttribute('data-color')):null;
-					element.setAttribute('style','background-color:rgba(' + color.r + ',' + color.g + ',' + color.b + ',0.35);');
+					element.setAttribute('style','backgroundp-color:rgba(' + color.r + ',' + color.g + ',' + color.b + ',0.35);');
 				}else if(element){
 					element.removeAttribute('style');
 				}
@@ -187,15 +190,15 @@ function Datepickk(args){
 		var legends = [];
 		for(var l = 0;l<_highlights.length;l++){
 			if('legend' in _highlights[l] && _highlights[l].legend){
-				var oldLegend = container.querySelector('.dp-legend-item[data-legend="' + _highlights[l].legend + '"][data-color="' + _highlights[l].backgroundColor + '"]');
+				var oldLegend = container.querySelector('.dp-legendp-item[data-legend="' + _highlights[l].legend + '"][data-color="' + _highlights[l].backgroundColor + '"]');
 				if(oldLegend == null){
 					var legendItem = document.createElement('p');
-						legendItem.setAttribute('class','dp-legend-item');
+						legendItem.setAttribute('class','dp-legendp-item');
 						legendItem.setAttribute('data-legend',_highlights[l].legend);
-						legendItem.setAttribute('data-legend-id',highlight.indexOf(_highlights[l]));
+						legendItem.setAttribute('data-legendp-id',highlight.indexOf(_highlights[l]));
 						legendItem.setAttribute('data-color',_highlights[l].backgroundColor);
 					var legendItemPoint = document.createElement('span');
-						legendItemPoint.setAttribute('style','background-color:' + _highlights[l].backgroundColor);
+						legendItemPoint.setAttribute('style','backgroundp-color:' + _highlights[l].backgroundColor);
 
 					legendItem.appendChild(legendItemPoint);
 
@@ -209,7 +212,7 @@ function Datepickk(args){
 			}
 		}
 
-		[].slice.call(that.el.legend.querySelectorAll('.dp-legend-item')).forEach(function(item) {
+		[].slice.call(that.el.legend.querySelectorAll('.dp-legendp-item')).forEach(function(item) {
 			if(legends.indexOf(item) < 0){
 				item.removeEventListener('mouseover',hoverLegend);
 				item.removeEventListener('mouseout',hoverLegend);
@@ -218,9 +221,9 @@ function Datepickk(args){
 		});
 
 		function hoverLegend(e){
-			[].slice.call(that.el.tables.querySelectorAll('[data-legend-id*="' + this.getAttribute('data-legend-id') + '"]')).forEach(function(element) {
-				if(e.type == 'mouseover') element.classList.add('legend-hover');
-				else element.classList.remove('legend-hover');
+			[].slice.call(that.el.tables.querySelectorAll('[data-legendp-id*="' + this.getAttribute('data-legendp-id') + '"]')).forEach(function(element) {
+				if(e.type == 'mouseover') element.classList.add('legendp-hover');
+				else element.classList.remove('legendp-hover');
 			});
 		}
 	}
@@ -255,7 +258,7 @@ function Datepickk(args){
 				inputEl.checked = false;
 				inputEl.removeAttribute('disabled');
 				labelEl.removeAttribute('style');
-				labelEl.removeAttribute('data-legend-id');
+				labelEl.removeAttribute('data-legendp-id');
 				labelEl.className = '';
 
 				var date = null;
@@ -345,7 +348,7 @@ function Datepickk(args){
 						}
 						var Color = (_highlights[0].color)?'color:'+ _highlights[0].color + ';':'';
 						labelEl.setAttribute('style',bgColor + Color);
-						labelEl.setAttribute('data-legend-id',legendIds);
+						labelEl.setAttribute('data-legendp-id',legendIds);
 					}
 				}
 			});
@@ -409,7 +412,7 @@ function Datepickk(args){
 			}
 			endmonth += languages[lang].monthNames[monthint];
 		}
-		var yearname = (currentMonth-1+months-1 > 11)?currentYear.toString().substring(2,4) + '/' + (currentYear + 1).toString().substring(2,4):currentYear.toString().substring(2,4);
+		var yearname = (currentMonth-1+months-1 > 11)?currentYear.toString() + '/' + (currentYear + 1).toString():currentYear.toString();
 		that.el.header.childNodes[1].childNodes[0].innerHTML = startmonth + endmonth;
 		that.el.header.childNodes[1].childNodes[1].innerHTML = yearname;
 
@@ -632,9 +635,29 @@ function Datepickk(args){
 
 		[].slice.call(that.el.yearPicker.childNodes).forEach(function(yearPicker) {
 			yearPicker.addEventListener(eventName,function(){
-				currentYear += parseInt(this.getAttribute('data-year'));
-				setDate();
-				that.el.yearPicker.classList.remove('dp-show');
+				if(this.getAttribute('data-year') != null) {
+					currentYear += parseInt(this.getAttribute('data-year'));
+					setDate();
+					that.el.yearPicker.classList.remove('dp-show');
+				}
+				else {
+					var param = this.getAttribute('data-param');
+					var year_add = 0;
+					if (param == 'prev') {
+						year_add = -10;
+					}
+					else if (param == 'next') {
+						year_add = 10;
+					}
+					else {
+						alert('Erreur : Element non-reconnu');
+					}
+					if (year_add != 0) {
+						currentYear += year_add;
+						generateYears();
+					}
+				}
+
 			});
 		})
 
@@ -1188,6 +1211,7 @@ var template = 	'<div class="dp-title"></div>' +
 						'<div data-month="12">12</div>' +
 					'</div>' +
 					'<div class="dp-year-picker">' +
+						'<div data-param="prev"><i class="fas fa-angle-left"></i></div>' +
 						'<div data-year="-5"></div>' +
 						'<div data-year="-4"></div>' +
 						'<div data-year="-3"></div>' +
@@ -1199,6 +1223,7 @@ var template = 	'<div class="dp-title"></div>' +
 						'<div data-year="3"></div>' +
 						'<div data-year="4"></div>' +
 						'<div data-year="5"></div>' +
+						'<div data-param="next"><i class="fas fa-angle-right"></i></div>' +
 					'</div>' +
 					'<div class="dp-weekdays"></div>' +
 					'<div class="dp-tables"></div>' +
